@@ -4,8 +4,8 @@ import urllib
 import requests
 app = Flask(__name__)
 
-clientID = "e30c552da1264f94a0414906a89b6eb8"
-clientSecret = "b12914ccec2449258eb4e5f23f7e3e67"
+clientID = ""
+clientSecret = ""
 
 @app.route('/')
 def homepage():
