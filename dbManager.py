@@ -19,6 +19,8 @@ def addClient(dbName, code, accessToken):
 
 	conn = sqlite3.connect(dbName) #establish connection
 
+	#check if client already exists in 
+
 	#insert data into databse
 	conn.execute("INSERT INTO hosts VALUES(?, ?)", (accessToken, code))
 
@@ -32,7 +34,10 @@ def getValue(dbName, code):
 
 	conn = sqlite3.connect(dbName)
 
-	data = conn.execute("SELECT * FROM hosts WHERE code = ?", (code, ))
+	try:
+		data = conn.execute("SELECT * FROM hosts WHERE code = ?", (code, ))
+	except:
+		return None
 	
 	accessToken = data.fetchone()[0]
 
@@ -40,7 +45,15 @@ def getValue(dbName, code):
 		print(element)
 		
 	conn.close()
-
-
-
 	return accessToken
+
+def deleteTable(dbName):
+	if(not isinstance(dbName, str)):
+		return None
+
+	conn = sqlite3.connect(dbName)
+
+	conn.execute("DROP TABLE hosts")
+
+	conn.commit()
+	conn.close()
