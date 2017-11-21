@@ -22,6 +22,16 @@ def hostLogin():
     call = "https://accounts.spotify.com/authorize?" + urllib.parse.urlencode(query)
     return redirect(call, code=302)
 
+@app.route('/guestLogin')
+def hostLogin():
+	return render_template('guestLogin.html')
+
+@app.route('/guestLogin/<int:code>')
+def hostLogin(code):
+	#get accessToken and data from database
+
+	#redirect to page with queue associated with database
+
 
 @app.route('/afterLogin')
 def afterLogin():
@@ -34,7 +44,7 @@ def afterLogin():
     resp = requests.post('https://accounts.spotify.com/api/token', params)
 
     if code == None:
-        return "We need you to login sorry!"
+        return "We need you to login, sorry!"
 
     # use access token to access Spotify API
 
@@ -58,7 +68,10 @@ def afterLogin():
     params = {'name': 'SPOTIFY_QUEUE', 'description': 'Playlist to which Spotify Queue adds and removes songs'}
     playlistObj = requests.post(playlistURI, json.dumps(params),
                                 headers=headers).json()  # playlist object to add and delete songs
-    print(playlistObj)
+    
+    # generate random code
+    
+    # add code to database along with token
 
     return render_template('./hostPage.html')
 
