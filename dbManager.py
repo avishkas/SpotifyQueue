@@ -19,7 +19,7 @@ def addClient(dbName, code, accessToken):
 
 	conn = sqlite3.connect(dbName) #establish connection
 
-	#check if client already exists in 
+	#check if client already exists
 
 	#insert data into databse
 	conn.execute("INSERT INTO hosts VALUES(?, ?)", (accessToken, code))
