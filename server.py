@@ -19,7 +19,7 @@ def hostLogin():
 	print("called")
 	query = {'response_type':'code', 'client_id':clientID, 'scope':'playlist-modify-public', 'redirect_uri':'http://localhost:5000/afterLogin'}
 	call = "https://accounts.spotify.com/authorize?" + urllib.parse.urlencode(query)
-	print(call)
+	print('call2')
 	return redirect(call, code=302)
 
 
