@@ -67,13 +67,13 @@ def afterLogin():
 	#generate code, check if it exists in the table
 	userAssociatedCode = ''.join(random.choice(string.ascii_uppercase + string.digits) for i in range(4))
 	#keep refreshing code until a unique is found
-	while(dbManager.codeIsDuplicate('User_Table', userAssociatedCode) == True):
+	while(dbManager.codeIsDuplicate('User_Table.db', userAssociatedCode) == True):
 		userAssociatedCode = ''.join(random.choice(string.ascii_uppercase + string.digits) for i in range(4))
 
 	#add code, accessToken, userID, and playlistID to database
-	dbManager.addClient('User_Table', userAssociatedCode, accessToken, userID, playlistObj['id'])
+	dbManager.addClient('User_Table.db', userAssociatedCode, accessToken, userID, playlistObj['id'])
 
-	return render_template('./hostPage.html') #host page should eventually have the 'code' and songs in queue
+	return render_template('./hostPage.html', code=userAssociatedCode) #host page should eventually have the 'code' and songs in queue
 
 @app.route('/guestLogin')
 def guestLogin():
@@ -93,13 +93,33 @@ def addSong(value):
 	#add song to playlist
 	
 
-@app.route('/client/<code>')
-def clientLogin(code):
+@app.route('/nonStatic/clientLogin/')
+def clientLogin():
 	#check if code exists in database
-	if(dbManager.getValue('hosts.db', code) == none):
-		return "incorrect code sorry"
-	else:
-		return render_template('guestPage.html')
+	print('working')
+	code = request.args.get('code')
+	if(dbManager.codeIsDuplicate('User_Table.db', code) == True):
+		print('code found')
+		#redirect to page with list of songs in playlist
+
+		#get the playlist
+		#accessToken, code, userID, playlistID
+		hostData = dbManager.getData('User_Table.db', code)
+		playlistID = hostData[3];
+		accessToken = hostData[0]
+		userID = hostData[2]
+
+		print("playlistID:", playlistID, "accessToken:", accessToken, "userID:", userID)
+		#make request to spotify api to get playlist object
+		print("making request")
+		headers = {'Authorization' : 'Bearer ' + accessToken}
+		playlistReponse = requests.get('https://api.spotify.com/v1/users/'+userID+'/playlists/'+playlistID+'/tracks', headers=headers).json()
+		print(json.dumps(playlistReponse, indent=4))
+
+		return jsonify(playlistReponse)
+
+	return "could not find code"
+
 
 
 if __name__ == "__main__":
