@@ -1,0 +1,13 @@
+body{
+	background-color: #c2d0dc;
+}
+
+.push-element-down{
+	position: absolute;
+	bottom: 50px;
+}
+
+
+
+
+.top-buffer{margin-top:20px;}
