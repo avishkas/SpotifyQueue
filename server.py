@@ -92,7 +92,7 @@ def addSong(value):
 def guestLogin():
 	#check if code exists in database
 	
-	code = request.args.get('code')
+	code = request.args.get('code').upper()
 	print("code:", code)
 	if(dbManager.codeIsDuplicate('User_Table.db', code) == True):
 		print('code found')
@@ -101,7 +101,7 @@ def guestLogin():
 		#get the playlist
 		#accessToken, code, userID, playlistID
 		hostData = dbManager.getData('User_Table.db', code)
-		playlistID = hostData[3];
+		playlistID = hostData[3]
 		accessToken = hostData[0]
 		userID = hostData[2]
 
