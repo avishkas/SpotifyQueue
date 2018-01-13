@@ -18,6 +18,7 @@ $(document).ready(function(){
 				}
 			});
 		}else{
+			//display error message
 			$('#codeNotFoundIndicator').html('Incorrect Code Length')
 		}
 	});
@@ -27,7 +28,26 @@ $(document).ready(function(){
 			//send get request to server to retrieve query results
 			var typeSelected = $('#serachQuerySelector').val();
 			var input = $('#searchQueryInput.').val();
-			$.get('/nonStatic/getQueryResults', {})			
+			$.get('/nonStatic/getQueryResults', {q:$('searchQueryInput').val(), type:$('serachQuerySelector').val(), offset:0}, function(data){
+				for(var spotifyTrackID in data){
+					//filter out meta-information
+					if(data.hasOwnProperty(spotifyTrackID)){
+						var songName = data.spotifyTrackID.songName;
+						//concatinate artist names
+						var artistName = data.spotifyTrackID.artistName[0];
+						for(int i = 1; i < data.spotifyTrackID.artistName.length; i++){
+							artistName += data.spotifyTrackID.artistName[i];
+						}
+						//append songs to table
+						$('#queriedSongs').append(`<tr>
+							<td><input class="form-check-input" type="checkbox" value="${spotifyTrackID}" id="${spotifyTrackID}"></td>
+							<td>${songName}</td>
+							<td>${artistName}</td>
+							</tr>`);
+					}
+				}
+			});
+
 		}else{
 			$('#searchQueryInput').attr("placeholder", "please entery query");
 		}

@@ -126,6 +126,21 @@ def guestLogin():
 
 	return "Code_Not_Found"
 
+@app.route('/nonStatic/getQueryResults')
+def getQueryResults(){
+	parameters = request.args
+	query = parameters.get('q');
+	queryType = parameters.get('type');
+	queryOffset = parameters.get('offset');
+	code = parameters.get('code');
+	userAccesToken = dbManager.getData('User_Table.db', code)
+
+	params = {q: query, type: queryType, offset: queryOffset}
+	headers = {'Authorization' : 'Bearer ' + userAccesToken}
+	trackQuery = requests.get('https://api.spotify.com/v1/search', params, headers=headers).json();
+
+	
+}
 
 
 if __name__ == "__main__":
