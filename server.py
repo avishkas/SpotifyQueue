@@ -127,20 +127,55 @@ def guestLogin():
 	return "Code_Not_Found"
 
 @app.route('/nonStatic/getQueryResults')
-def getQueryResults(){
+def getQueryResults():
 	parameters = request.args
-	query = parameters.get('q');
-	queryType = parameters.get('type');
-	queryOffset = parameters.get('offset');
-	code = parameters.get('code');
-	userAccesToken = dbManager.getData('User_Table.db', code)
+	query = parameters.get('q')
 
-	params = {q: query, type: queryType, offset: queryOffset}
-	headers = {'Authorization' : 'Bearer ' + userAccesToken}
-	trackQuery = requests.get('https://api.spotify.com/v1/search', params, headers=headers).json();
+	queryType = parameters.get('type')
+	queryOffset = parameters.get('offset')
+	code = parameters.get('code').upper()
+	print(code)
+	userAccessToken = dbManager.getData('User_Table.db', code)[0]
+	print(userAccessToken)
 
+
+	params = {"q": query, "type": queryType, "offset": queryOffset}
+	headers = {'Authorization' : 'Bearer ' + userAccessToken}
+	trackQuery = requests.get('https://api.spotify.com/v1/search', params, headers=headers).json()
+	print(trackQuery.items)
+
+	songSet = {}
+
+	for trackObject in trackQuery['tracks']['items']:
+		songSet[trackObject['id']] = {'name': trackObject['name'], 'artists': trackObject['artists']}
+
+	return jsonify(songSet)
+
+@app.route('/nonStatic/addToPlaylist', methods=['POST'])
+def addToPlaylist():
 	
-}
+	parameters = request.get_json(force=True)
+	code = parameters['code'].upper()
+
+	spotifyTrackIDs = []
+	for trackID in parameters['trackIDs']:
+		spotifyTrackIDs.append("spotify:track:"+trackID)
+
+	params = {"uris":spotifyTrackIDs}
+	
+	hostData = dbManager.getData('User_Table.db', code)
+	hostSpotifyID = hostData[2]
+	hostPlaylistID = hostData[3]
+	hostAccessToken = hostData[0]
+
+	print(params)
+
+	headers = {'Authorization' : 'Bearer ' + hostAccessToken, 'Content-Type':'application/json'}
+	queryStringData = requests.post('https://api.spotify.com/v1/users/'+hostSpotifyID+"/playlists/"+hostPlaylistID+"/tracks", json.dumps(params), headers=headers)
+	print(queryStringData.url)
+	print(queryStringData.content)
+
+	return json.dumps({'success':True}, 200, {'ContentType':'application/json'})
 
 
 if __name__ == "__main__":
