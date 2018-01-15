@@ -13,11 +13,13 @@ clientCodeRelations = {}
 #on start create database if it doesn't already exist
 dbManager.createTable("User_Table.db")
 
+baseDNS = "ec2-18-218-7-55.us-east-2.compute.amazonaws.com"
+
 
 @app.route('/nonStatic/hostLogin', methods=['GET', 'POST'])
 def hostLogin():
 	#redirects user to login page
-	query = {'response_type':'code', 'client_id':clientID, 'scope':'playlist-modify-public', 'redirect_uri':'http://localhost:80/nonStatic/afterLogin'}
+	query = {'response_type':'code', 'client_id':clientID, 'scope':'playlist-modify-public', 'redirect_uri':baseDNS+'/nonStatic/afterLogin'}
 	call = "https://accounts.spotify.com/authorize?" + urllib.parse.urlencode(query)
 
 	authenticationURL = {'url' : call}
@@ -35,7 +37,7 @@ def afterLogin():
 	if code == None:
 		return "We need you to login sorry!"
 
-	params = {'grant_type' : 'authorization_code', 'code' : code, 'redirect_uri' : 'http://localhost:80/nonStatic/afterLogin', 'client_id': clientID, 'client_secret' : clientSecret}
+	params = {'grant_type' : 'authorization_code', 'code' : code, 'redirect_uri' :baseDNS+'/nonStatic/afterLogin', 'client_id': clientID, 'client_secret' : clientSecret}
 	resp = requests.post('https://accounts.spotify.com/api/token', params)
 
 	
