@@ -13,7 +13,7 @@ clientCodeRelations = {}
 #on start create database if it doesn't already exist
 dbManager.createTable("User_Table.db")
 
-baseDNS = "ec2-18-218-7-55.us-east-2.compute.amazonaws.com"
+baseDNS = "http://ec2-18-218-7-55.us-east-2.compute.amazonaws.com"
 
 
 @app.route('/nonStatic/hostLogin', methods=['GET', 'POST'])
