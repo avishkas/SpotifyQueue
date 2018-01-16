@@ -40,8 +40,6 @@ def afterLogin():
 	params = {'grant_type' : 'authorization_code', 'code' : code, 'redirect_uri' :baseDNS+'/nonStatic/afterLogin', 'client_id': clientID, 'client_secret' : clientSecret}
 	resp = requests.post('https://accounts.spotify.com/api/token', params)
 
-	
-
 	#use code to retrieve access token
 
 	responseData = resp.json()
@@ -54,16 +52,25 @@ def afterLogin():
 	userIDResponse = requests.get('https://api.spotify.com/v1/me', headers=headers).json() #retrieve ID
 
 	userID = userIDResponse['id']
-	
-	# resp2 = requests.get('https://api.spotify.com/v1/me/playlists', headers=headers)
 
 	#first check if there is a spotify playlist called spotify queue
+	headers = {'Authorization' : 'Bearer ' + accessToken}
+	response = requests.get('https://api.spotify.com/v1/users/' + userID + '/playlists', headers=headers)
+	userPlaylists = response['items']
+	playlistID = ''
 
-	#create playlist for current user if playlist doesn't already exist
-	playlistURI = 'https://api.spotify.com/v1/users/' + userID + '/playlists'
-	headers = {'Authorization' : headerVal, 'Content-Type' : 'application/json'}
-	params = {'name' : 'SPOTIFY_QUEUE', 'description' : 'Playlist to which Spotify Queue adds and removes songs'}
-	playlistObj = requests.post(playlistURI, json.dumps(params), headers=headers).json() #playlist object to add and delete songs
+	for playlist in userPlaylists:
+		if playlist['name'] == 'SPOTIFY_QUEUE':
+			playlistID = playlist['id']
+			break
+
+	if(playlistID == ''):
+		#create playlist for current user if playlist doesn't already exist
+		playlistURI = 'https://api.spotify.com/v1/users/' + userID + '/playlists'
+		headers = {'Authorization' : headerVal, 'Content-Type' : 'application/json'}
+		params = {'name' : 'SPOTIFY_QUEUE', 'description' : 'Playlist to which Spotify Queue adds and removes songs'}
+		playlistObj = requests.post(playlistURI, json.dumps(params), headers=headers).json() #playlist object to add and delete songs
+		playlistID = playlistObj['id']
 
 	#generate code, check if it exists in the table
 	userAssociatedCode = ''.join(random.choice(string.ascii_uppercase + string.digits) for i in range(4))
@@ -72,22 +79,9 @@ def afterLogin():
 		userAssociatedCode = ''.join(random.choice(string.ascii_uppercase + string.digits) for i in range(4))
 
 	#add code, accessToken, userID, and playlistID to database
-	dbManager.addClient('User_Table.db', userAssociatedCode, accessToken, userID, playlistObj['id'])
+	dbManager.addClient('User_Table.db', userAssociatedCode, accessToken, userID, playlistID)
 
 	return render_template('./hostPage.html', code=userAssociatedCode) #host page should eventually have the 'code' and songs in queue
-
-@app.route('/addSong/')
-def addSong(value):
-	#get code and song id
-	code = request.args.get('code')
-	songId = requst.args.get('songId')
-
-	accessToken = dbManager.getValue('hosts.db', code)
-
-	if(acesstoken == None):
-		return "Client does not exist"
-
-	#add song to playlist
 	
 
 @app.route('/nonStatic/guestLogin/')
