@@ -13,7 +13,8 @@ clientCodeRelations = {}
 #on start create database if it doesn't already exist
 dbManager.createTable("User_Table.db")
 
-baseDNS = "http://ec2-18-218-7-55.us-east-2.compute.amazonaws.com"
+baseDNS = "http://localhost:5500"
+baseDNSs = "http://ec2-18-218-7-55.us-east-2.compute.amazonaws.com"
 
 
 @app.route('/nonStatic/hostLogin', methods=['GET', 'POST'])
@@ -55,7 +56,7 @@ def afterLogin():
 
 	#first check if there is a spotify playlist called spotify queue
 	headers = {'Authorization' : 'Bearer ' + accessToken}
-	response = requests.get('https://api.spotify.com/v1/users/' + userID + '/playlists', headers=headers)
+	response = requests.get('https://api.spotify.com/v1/users/' + userID + '/playlists', headers=headers).json()
 	userPlaylists = response['items']
 	playlistID = ''
 
@@ -135,7 +136,7 @@ def getQueryResults():
 	print(userAccessToken)
 
 
-	params = {"q": query, "type": queryType, "offset": queryOffset}
+	params = {"q": query, "type": "track", "offset": queryOffset}
 	headers = {'Authorization' : 'Bearer ' + userAccessToken}
 	trackQuery = requests.get('https://api.spotify.com/v1/search', params, headers=headers).json()
 	print(trackQuery.items)

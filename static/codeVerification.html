@@ -23,7 +23,7 @@
 
   	<div class="container fill" id="codeInput" style="display: block">
   		<div class="row">
-  			<div class="col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-4 text-center bg-info">
+  			<div class="col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-4 text-center">
   				<form>
   					<div class="form-group">
   						<input id="codeContainer" type="text" class="form-control" id="inputCode" placeholder="Enter 4 Character Code">
@@ -32,7 +32,7 @@
   			</div>
   		</div>
   		<div class="row"> 
-  			<div class="col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-4 text-center bg-success">
+  			<div class="col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-4 text-center">
   				<button id="login" type="button" class="btn-lg btn-primary">LOGIN</button>
   			</div>
   		</div>
@@ -46,7 +46,7 @@
   	<div id="playlistElements" style="display: none;">
   		<div class="container">
   			<div class="row">
-  				<div class="col-xs-6 col-xs-offset-3 col-sm-2 col-sm-offset-1 vcenter bg-success">
+  				<div class="col-xs-6 col-xs-offset-3 col-sm-2 col-sm-offset-1 vcenter">
   					<form>
   						<div class="form-group">
   							<select class="form-control" id="searchQuerySelector">
@@ -58,14 +58,14 @@
   						</div>
   					</form>
 	  			</div>
-	  			<div class="col-xs-6 col-xs-offset-3 col-sm-6 col-sm-offset-0 bg-danger">
+	  			<div class="col-xs-6 col-xs-offset-3 col-sm-6 col-sm-offset-0">
 	  				<form>
 	  					<div class="form-group">
 	  						<input type="text" class="form-control" id="searchQueryInput" placeholder="Search">
 	  					</div>
 	  				</form>
 	  			</div>
-	  			<div class="col-xs-6 col-xs-offset-3 col-sm-2 col-sm-offset-0 text-center bg-info">
+	  			<div class="col-xs-6 col-xs-offset-3 col-sm-2 col-sm-offset-0 text-center">
 	  				<button id="executeQuery" class="btn btn-primary">Search</button>
 	  			</div>
 	  		</div>
@@ -74,7 +74,7 @@
 
   		<div class="container">
   			<div class="row">
-  				<div class="col-xs-10 col-xs-offset-1 text-center bg-info">
+  				<div class="col-xs-10 col-xs-offset-1 text-center">
   					<table class="table table-bordered table-striped table-hover" id="queriedSongs">
   						<tbody>
   							<tr>
@@ -87,11 +87,14 @@
   				</div>
   			</div>
   			<div class="row">
-  				<div class="col-xs-10 col-xs-offset-1 col-sm-2 col-sm-offset-9 text-center bg-warning">
+  				<div class="col-xs-10 col-xs-offset-1 col-sm-2 text-center">
   					<button id="addSelectedSongs" class="btn btn-primary">Add Song(s)</button>
+  				</div>
+  				<div class="col-xs-10 col-xs-offset-3 col-sm-6">
+  					<label id="addSuccessIndicator"></label>
+  				</div>
   			</div>
   		</div>
-  	</div>
 
       <!-- jquery file -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

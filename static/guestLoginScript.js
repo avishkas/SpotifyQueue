@@ -70,8 +70,17 @@ $(document).ready(function(){
 		});
 		console.log(selectedTrackIDs);
 
-		$.post('/nonStatic/addToPlaylist', JSON.stringify({"code":code, "trackIDs":selectedTrackIDs}), function(data){});
-
-		//call server and send data
+		$.post('/nonStatic/addToPlaylist', JSON.stringify({"code":code, "trackIDs":selectedTrackIDs}), function(data){
+			$('#addSuccessIndicator').css('color', 'green');
+			$('#addSuccessIndicator').html('Song Successfully Added!');
+		});
 	});
+});
+
+//on error paint label red
+$(document).ajaxError(function(event, jqxhr, settings, thrownError){
+	 if(settings.url == "/nonStatic/addToPlaylist"){
+	 	$('#addSuccessIndicator').css('color', 'red');
+		$('#addSuccessIndicator').html('There was an error adding the song(s), please refresh the page and try again.');
+	 }
 });
